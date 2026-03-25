@@ -1,0 +1,107 @@
+<Page
+    x:Class="Zsnd_UI.Page_About"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:settings="using:Zsnd_UI.ViewModels"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
+
+    <Grid ColumnSpacing="30" RowSpacing="10" Padding="30 0 30 10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Button x:Name="BackButton" x:Uid="BackButton"
+                Click="BackButton_Click"
+                Margin="-10 0 0 0"
+                Style="{StaticResource TitleBarBackButtonStyle}"/>
+        <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"-->
+        <TextBlock x:Uid="AboutTitle" Grid.Row="1" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+        <StackPanel Grid.Row="2" Spacing="10">
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}">
+                <Run x:Uid="AppName"/>
+                <Run x:Name="AppVersion" Text="{x:Bind settings:Shared.Version}"/>
+            </TextBlock>
+            <TextBlock Text="GNU General Public License 3.0"/>
+            <TextBlock x:Uid="AboutDescription"
+                       HorizontalAlignment="Left"
+                       MaxWidth="300"
+                       Style="{ThemeResource BodyTextBlockStyle}"
+                       TextWrapping="Wrap"/>
+            <StackPanel Margin="-10 0" Orientation="Horizontal" Spacing="5">
+                <HyperlinkButton x:Uid="AboutLink" NavigateUri="{x:Bind settings:Shared.GitHub}" />
+                <HyperlinkButton x:Uid="UpdateCheck" Click="CheckUpdate_Click"/>
+            </StackPanel>
+            <ProgressBar x:Name="UpdateProgress"
+                         Minimum="0" Maximum="100"
+                         Visibility="Collapsed"/>
+            <InfoBar x:Name="UpdateIsCurrent" x:Uid="UpdateIsCurrent"/>
+            <InfoBar x:Name="UpdateFailedAccess" x:Uid="UpdateFailA" Severity="Error"/>
+            <InfoBar x:Name="UpdateFailedRetrieve" x:Uid="UpdateFailR" Severity="Error"/>
+            <InfoBar x:Name="UpdateFailed" x:Uid="UpdateFail" Severity="Error"/>
+        </StackPanel>
+        <ScrollView x:Name="UpdateInfo" Grid.Row="2" MaxWidth="400" Visibility="Collapsed">
+            <Grid Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.RowSpan="3" Margin="-10"
+                           Fill="{ThemeResource TextBoxBackgroundThemeBrush}"
+                           Opacity="0.5"
+                           RadiusX="4"
+                           RadiusY="4"
+                           Style="{ThemeResource ColorPickerBorderStyle}"/>
+                <TextBlock x:Name="UpdateInfoTitle" Margin="0 8"
+                           Style="{ThemeResource BodyStrongTextBlockStyle}"
+                           TextWrapping="Wrap"/>
+                <TextBlock x:Name="UpdateInfoBody"
+                           Grid.Row="1"
+                           TextWrapping="Wrap"/>
+                <Button x:Name="UpdateButton" x:Uid="UpdateNowButton" Click="Update_Click" Grid.Row="2" Margin="5"/>
+                <Button x:Name="CancelButton" x:Uid="UpdateCancel" Click="Cancel_Click" Grid.Row="2" Margin="5" Visibility="Collapsed"/>
+            </Grid>
+        </ScrollView>
+        <TextBlock x:Uid="AboutCredits" Grid.Column="1" Grid.Row="1" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="NoWrap"/>
+        <Grid Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" ColumnSpacing="10" RowSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="ak2yny"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" x:Uid="AboutCreditsCreators" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="1" Text="nikita488, Winstrol, Norrin Radd"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" x:Uid="AboutCreditsResearch" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="2" Text="nikita488, various"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" x:Uid="AboutCreditsXNAWAVResearch" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="3" Text="Outsider, Teancum"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" x:Uid="AboutCreditsTutorial" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="4">
+                <Hyperlink NavigateUri="https://stock.adobe.com/images/sunrise-over-group-of-planets-in-space/105677222">sdecoret</Hyperlink><Run Text=","/>
+                <Hyperlink NavigateUri="https://www.deviantart.com/tadp0l3/art/Nocturnal-skies-146160144">tadp0l3</Hyperlink>
+            </TextBlock>
+            <TextBlock Grid.Row="4" Grid.Column="1" x:Uid="AboutCreditsBannerImages" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="5" Text="BloodyMares"/>
+            <TextBlock Grid.Row="5" Grid.Column="1" x:Uid="AboutCreditsTesters" TextWrapping="Wrap"/>
+            <!--(?seprate CreditsSuggestions)-->
+        </Grid>
+    </Grid>
+</Page>

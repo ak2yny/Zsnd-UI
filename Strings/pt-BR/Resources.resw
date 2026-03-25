@@ -1,0 +1,486 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppErrorInfo.Title" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="AppName.Text" xml:space="preserve">
+    <value>Zsnd UI</value>
+  </data>
+  <data name="FileErrorIncompatible.Title" xml:space="preserve">
+    <value>File Not Added</value>
+  </data>
+  <data name="FileErrorIncompatible.Message" xml:space="preserve">
+    <value>The File could not be added, because it's incompatible or there was an access error.</value>
+  </data>
+  <data name="FileMaxReached.Title" xml:space="preserve">
+    <value>File Not Added</value>
+  </data>
+  <data name="FileMaxReached.Message" xml:space="preserve">
+    <value>The File could not be added, because the list is already at its maximum capacity (65536 files).</value>
+  </data>
+  <data name="MenuFile.Title" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="MenuFileClose.Text" xml:space="preserve">
+    <value>Close tab</value>
+  </data>
+  <data name="MenuFileExit.Text" xml:space="preserve">
+    <value>Close window</value>
+  </data>
+  <data name="MenuFileNew.Text" xml:space="preserve">
+    <value>New tab</value>
+  </data>
+  <data name="MenuFileOpen.Text" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="MenuFileRecent.Text" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="MenuFileRecentNo.Text" xml:space="preserve">
+    <value>No recently closed tabs</value>
+  </data>
+  <data name="MenuFileSaveAll.Text" xml:space="preserve">
+    <value>Save all</value>
+  </data>
+  <data name="MenuFileSaveAs.Text" xml:space="preserve">
+    <value>Save as</value>
+  </data>
+  <data name="MenuFileSaveAsZsnd.Text" xml:space="preserve">
+    <value>Save as ZSND</value>
+  </data>
+  <data name="MenuFileSaveCurrent.Text" xml:space="preserve">
+    <value>Save as JSON</value>
+  </data>
+  <data name="MenuHelp.Title" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="MenuHelpAbout.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="SoundOptionF1.Content" xml:space="preserve">
+    <value>Unknown Option 1</value>
+  </data>
+  <data name="SoundOptionF2.Content" xml:space="preserve">
+    <value>Unknown Option 2</value>
+  </data>
+  <data name="SoundOptionF3.Content" xml:space="preserve">
+    <value>Unknown Option 3</value>
+  </data>
+  <data name="SoundOptionF4.Content" xml:space="preserve">
+    <value>Unknown Option 4</value>
+  </data>
+  <data name="SoundOptionF5.Content" xml:space="preserve">
+    <value>Unknown Option 5</value>
+  </data>
+  <data name="SoundOptionF6.Content" xml:space="preserve">
+    <value>Unknown Option 6</value>
+  </data>
+  <data name="SoundOptionF7.Content" xml:space="preserve">
+    <value>Unknown Option 7</value>
+  </data>
+  <data name="SoundOptionF8.Content" xml:space="preserve">
+    <value>Unknown Option 8</value>
+  </data>
+  <data name="SampleOptionLoop.Content" xml:space="preserve">
+    <value>Loop audio</value>
+  </data>
+  <data name="SampleRateBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Select a sample rate to play the selected sound with (defines the pitch and quality of the file -- only change if it's currently incorrect)</value>
+  </data>
+  <data name="SettingsBrowseButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="SampleDropAddFile.Text" xml:space="preserve">
+    <value>Drop file here, to add sample</value>
+  </data>
+  <data name="SoundNotPlayed.Message" xml:space="preserve">
+    <value>Corrupted or unsupported file or access error.</value>
+  </data>
+  <data name="SoundNotPlayed.Title" xml:space="preserve">
+    <value>Sound Could Not Be Played</value>
+  </data>
+  <data name="SampleBox.PlaceholderText" xml:space="preserve">
+    <value>-- Select a sound file --</value>
+  </data>
+  <data name="SelectedSampleExpander.Header" xml:space="preserve">
+    <value>Selected Sound Sample</value>
+  </data>
+  <data name="SampleOptionLoop.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Enable/disable looping for the selected sample</value>
+  </data>
+  <data name="SampleOptions.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Sample properties (flags); format</value>
+  </data>
+  <data name="SamplePlay.Text" xml:space="preserve">
+    <value>Play Sound</value>
+  </data>
+  <data name="SoundOptionsHeader.Text" xml:space="preserve">
+    <value>Don't change, except for experimentation or if known.</value>
+  </data>
+  <data name="SelectedPropertiesExpander.Header" xml:space="preserve">
+    <value>Selected Sound Properties</value>
+  </data>
+  <data name="SampleCopyHash.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copy the lowercase hash to the clipboard | Ctrl+Alt+C</value>
+  </data>
+  <data name="SampleHashSync.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Update the hash event controls above | F5</value>
+  </data>
+  <data name="SampleHashEdit.Header" xml:space="preserve">
+    <value>Manually enter the hash:</value>
+  </data>
+  <data name="SampleHashMusicEvent.Header" xml:space="preserve">
+    <value>Select music event:</value>
+  </data>
+  <data name="SampleHashMusicEvent.PlaceholderText" xml:space="preserve">
+    <value>Other event</value>
+  </data>
+  <data name="SampleHashMenuEvent.Header" xml:space="preserve">
+    <value>Select menu event:</value>
+  </data>
+  <data name="SampleHashMenuName.Header" xml:space="preserve">
+    <value>Change menu event name:</value>
+  </data>
+  <data name="SampleHashVEvent.Header" xml:space="preserve">
+    <value>Select voice event:</value>
+  </data>
+  <data name="SampleHashMEvent.Header" xml:space="preserve">
+    <value>Select sound event:</value>
+  </data>
+  <data name="SampleHashVEvent.PlaceholderText" xml:space="preserve">
+    <value>Other event</value>
+  </data>
+  <data name="SampleHashMEvent.PlaceholderText" xml:space="preserve">
+    <value>Other event</value>
+  </data>
+  <data name="SampleHashCharName.Header" xml:space="preserve">
+    <value>Char file name:</value>
+  </data>
+  <data name="SampleHashCategory.Header" xml:space="preserve">
+    <value>Select a category:</value>
+  </data>
+  <data name="SelectedHashExpander.Header" xml:space="preserve">
+    <value>Selected Sound Hash</value>
+  </data>
+  <data name="CommandBarBrowseSound.Label" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="CommandBarBrowseSound.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Browse for sound files to add.</value>
+  </data>
+  <data name="CommandBarAddSound.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Add a new sound, using the last configuration.</value>
+  </data>
+  <data name="SampleReorderButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Reorder and select sound samples</value>
+  </data>
+  <data name="BackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="CommandBarAddSound.Label" xml:space="preserve">
+    <value>Add new sound</value>
+  </data>
+  <data name="CommandBarSortHA.Text" xml:space="preserve">
+    <value>By hash ascending</value>
+  </data>
+  <data name="CommandBarSortFA.Text" xml:space="preserve">
+    <value>By flags ascending</value>
+  </data>
+  <data name="CommandBarSortSRA.Text" xml:space="preserve">
+    <value>By sample rate ascending</value>
+  </data>
+  <data name="CommandBarSortScA.Text" xml:space="preserve">
+    <value>By source file ascending</value>
+  </data>
+  <data name="CommandBarSortID.Text" xml:space="preserve">
+    <value>By index descending</value>
+  </data>
+  <data name="CommandBarSortIA.Text" xml:space="preserve">
+    <value>By index ascending</value>
+  </data>
+  <data name="CommandBarSortSD.Text" xml:space="preserve">
+    <value>By sample descending</value>
+  </data>
+  <data name="CommandBarSortSA.Text" xml:space="preserve">
+    <value>By sample ascending</value>
+  </data>
+  <data name="CommandBarSortHD.Text" xml:space="preserve">
+    <value>By hash descending</value>
+  </data>
+  <data name="CommandBarSortFD.Text" xml:space="preserve">
+    <value>By flags descending</value>
+  </data>
+  <data name="CommandBarSortSRD.Text" xml:space="preserve">
+    <value>By sample rate descending</value>
+  </data>
+  <data name="CommandBarSortScD.Text" xml:space="preserve">
+    <value>By source file descending</value>
+  </data>
+  <data name="CommandBarSort.Label" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="CommandBarSort.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Sort sounds by hash or file</value>
+  </data>
+  <data name="ZSNDPropertiesExpander.Header" xml:space="preserve">
+    <value>ZSND Properties</value>
+  </data>
+  <data name="ZSNDExtractDirName.Header" xml:space="preserve">
+    <value>Change default extracted sample directory:</value>
+  </data>
+  <data name="ZSNDExtractDirName.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>A directory name next to the .json file, where new audio files are added to.</value>
+  </data>
+  <data name="ZSNDPlatform.Header" xml:space="preserve">
+    <value>WARNING: Changing the platform can cause sample incompatibility issues!</value>
+  </data>
+  <data name="ZSNDJsonDir.Text" xml:space="preserve">
+    <value>Extraction directory: </value>
+  </data>
+  <data name="ZSNDJsonPath.Text" xml:space="preserve">
+    <value>JSON file: </value>
+  </data>
+  <data name="ZSNDPath.Text" xml:space="preserve">
+    <value>ZSND file: </value>
+  </data>
+  <data name="FileErrorFailed.Title" xml:space="preserve">
+    <value>File Error</value>
+  </data>
+  <data name="FileErrorFailedSubTitle" xml:space="preserve">
+    <value>Failed to write '{0}':</value>
+  </data>
+  <data name="CommandBarExtract.Label" xml:space="preserve">
+    <value>Extract</value>
+  </data>
+  <data name="CommandBarExtractAudio.Text" xml:space="preserve">
+    <value>Extract audio files</value>
+  </data>
+  <data name="CommandBarExtractRaw.Text" xml:space="preserve">
+    <value>Extract raw samples</value>
+  </data>
+  <data name="MenuView.Title" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="MenuViewCompactMode.Text" xml:space="preserve">
+    <value>Show full banner</value>
+  </data>
+  <data name="MenuViewSplitView.Text" xml:space="preserve">
+    <value>Enable split view</value>
+  </data>
+  <data name="AboutTitle.Text" xml:space="preserve">
+    <value>About this app</value>
+  </data>
+  <data name="AboutDescription.Text" xml:space="preserve">
+    <value>Graphical User Interface to modify ZSND audio containers (.zss and .zsm) used in Raven Software games, such as Marvel Ultimate Alliance 1 and the X-Men Legends series.</value>
+  </data>
+  <data name="AboutLink.Content" xml:space="preserve">
+    <value>GitHub page</value>
+  </data>
+  <data name="UpdateCheck.Content" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="UpdateIsCurrent.Title" xml:space="preserve">
+    <value>No update needed</value>
+  </data>
+  <data name="UpdateIsCurrent.Message" xml:space="preserve">
+    <value>The current version is the latest version.</value>
+  </data>
+  <data name="UpdateFailA.Message" xml:space="preserve">
+    <value>Failed to access the GitHub API.</value>
+  </data>
+  <data name="UpdateFailA.Title" xml:space="preserve">
+    <value>Update failed</value>
+  </data>
+  <data name="UpdateFailR.Title" xml:space="preserve">
+    <value>Update failed</value>
+  </data>
+  <data name="UpdateFail.Title" xml:space="preserve">
+    <value>Update failed</value>
+  </data>
+  <data name="UpdateFailR.Message" xml:space="preserve">
+    <value>The update information could not be retrieved from GitHub.</value>
+  </data>
+  <data name="UpdateNowButton.Content" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="UpdateCancel.Content" xml:space="preserve">
+    <value>Cancel update</value>
+  </data>
+  <data name="AboutCredits.Text" xml:space="preserve">
+    <value>Credits</value>
+  </data>
+  <data name="AboutCreditsCreators.Text" xml:space="preserve">
+    <value>Programming, Design</value>
+  </data>
+  <data name="AboutCreditsResearch.Text" xml:space="preserve">
+    <value>Reverse engineering ZSND, discovering PJW hashing, hash/events &amp; format research</value>
+  </data>
+  <data name="AboutCreditsXNAWAVResearch.Text" xml:space="preserve">
+    <value>XNA and WAV Research</value>
+  </data>
+  <data name="AboutCreditsTutorial.Text" xml:space="preserve">
+    <value>Sound tutorials and hash research</value>
+  </data>
+  <data name="AboutCreditsBannerImages.Text" xml:space="preserve">
+    <value>Banner images</value>
+  </data>
+  <data name="AboutCreditsTesters.Text" xml:space="preserve">
+    <value>Auto hash suggestions, testing (Zsound.bat)</value>
+  </data>
+  <data name="SettingsTitle.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsExtractedAssetsPath.Description" xml:space="preserve">
+    <value>Path to the extracted assets. For .zss and .zsm files only; .json files always extract to relative/configured directory.</value>
+  </data>
+  <data name="SettingsExtractedAssetsPath.Header" xml:space="preserve">
+    <value>Extracted Assets Path</value>
+  </data>
+  <data name="CommandBarBack.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="CommandBarSortApply.Text" xml:space="preserve">
+    <value>Apply custom order</value>
+  </data>
+  <data name="CommandBarSortApply.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Applies the currently shown order, so that it's also applied to the files, when saved. The search filter must be empty.</value>
+  </data>
+  <data name="CommandBarSortRestore.Text" xml:space="preserve">
+    <value>Restore applied order</value>
+  </data>
+  <data name="CommandBarSortRestore.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Restore applied order</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available {0} ({1})</value>
+  </data>
+  <data name="UpdateInstallTitle" xml:space="preserve">
+    <value>Install Update</value>
+  </data>
+  <data name="UpdateInstallContent" xml:space="preserve">
+    <value>The update has been downloaded to '{0}'. Click 'Install now' to save the settings, close the program and start the installation.</value>
+  </data>
+  <data name="UpdateInstallPrimaryButton" xml:space="preserve">
+    <value>Install now</value>
+  </data>
+  <data name="UpdateInstallCloseButton" xml:space="preserve">
+    <value>Install manually</value>
+  </data>
+</root>

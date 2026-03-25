@@ -1,0 +1,85 @@
+<Page
+    x:Class="Zsnd_UI.Page_Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Zsnd_UI.Controls"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="SettingsSectionHeaderStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
+            <Setter Property="Margin" Value="1 20 0 5"/>
+        </Style>
+        <Style x:Key="SettingsCard" TargetType="Grid">
+            <Setter Property="Background" Value="{ThemeResource ExpanderHeaderBackground}"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource ExpanderHeaderBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="{ThemeResource ExpanderHeaderBorderThickness}"/>
+            <Setter Property="Padding" Value="16 10"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        <Style TargetType="Expander">
+            <Setter Property="Background" Value="{ThemeResource ExpanderHeaderBackground}"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource ExpanderHeaderBorderBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="640" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="NarrowLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SettingsList.Padding" Value="5,0" />
+                        <Setter Target="SettingsTitle.Margin" Value="36,10,0,0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Button x:Name="BackButton" x:Uid="BackButton"
+                Click="BackButton_Click"
+                Margin="20 0 0 0"
+                Style="{StaticResource TitleBarBackButtonStyle}"/>
+        <!--WIP: In About, the margin is 30, not 36-->
+        <TextBlock x:Name="SettingsTitle" Grid.Row="1"
+                   Margin="36 10 36 0"
+                   Style="{ThemeResource SubtitleTextBlockStyle}">
+            <Run x:Uid="SettingsTitle"/>
+            <!--<Run Text="{x:Bind Cfg.GUI.Game}"/>-->
+        </TextBlock>
+        <ScrollView x:Name="SettingsList" Grid.Row="2" IsTabStop="False" Margin="0 0 0 10" Padding="36 8">
+            <Grid RowDefinitions="Auto" RowSpacing="3">
+                <!--<TextBlock Text="Subtitle/Category" Style="{StaticResource SettingsSectionHeaderStyle}"/>-->
+                <Grid Style="{StaticResource SettingsCard}" Padding="16 10 60 10">
+                    <controls:SettingsCardContent x:Name="ExtractedAssetsPath" x:Uid="SettingsExtractedAssetsPath">
+                        <controls:SettingsCardContent.Icon>
+                            <FontIcon Glyph="&#xED41;"/>
+                        </controls:SettingsCardContent.Icon>
+                        <Grid VerticalAlignment="Center">
+                            <TextBox Text="{x:Bind Cfg.ExtractedAssetsPath, Mode=TwoWay}" Margin="0 0 40 0"/>
+                            <Button x:Uid="SettingsBrowseButton" Content="..." FontWeight="Bold" Click="ExtractedAssetsPath_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                        </Grid>
+                    </controls:SettingsCardContent>
+                </Grid>
+            </Grid>
+            <!--TO ADD:
+                - Copy headerless or use source file
+                - Whether to make a backup when saving source files (at least ZSND)-->
+        </ScrollView>
+    </Grid>
+</Page>

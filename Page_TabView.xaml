@@ -1,0 +1,202 @@
+<Page
+    x:Class="Zsnd_UI.Page_TabView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Zsnd_UI.Controls"
+    xmlns:lib="using:Zsnd_UI.lib"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
+
+    <Grid>
+        <TabView x:Name="MainTabView"
+                 AddTabButtonClick="MainTabView_AddTabButtonClick"
+                 KeyboardAcceleratorPlacementMode="Hidden"
+                 TabCloseRequested="MainTabView_TabCloseRequested"
+                 TabItemsSource="{x:Bind VM.Tabs}"
+                 VerticalAlignment="Stretch"
+                 CanDragTabs="True"
+                 CanReorderTabs="True"
+                 TabDragStarting="MainTabView_TabDragStarting"
+                 TabStripDragOver="MainTabView_TabStripDragOver"
+                 TabStripDrop="MainTabView_TabStripDrop"
+                 TabDroppedOutside="MainTabView_TabDroppedOutside">
+            <!--New tear out feature that creates window right away, for immediate drag to edge:
+                 CanTearOutTabs="True"
+                 TabTearOutWindowRequested="MainTabView_TabTearOutWindowRequested"
+                 TabTearOutRequested="MainTabView_TabTearOutRequested"
+                 ExternalTornOutTabsDropping="MainTabView_ExternalTornOutTabsDropping"
+                 ExternalTornOutTabsDropped="MainTabView_ExternalTornOutTabsDropped"
+                 Issues: Initializes on simple select; Slightly less responsive; disables move & rearrange-->
+            <!--Possible theming, depending on banner/visibility (themed banner is the better solution, I think)
+            <TabView.Resources>
+                <SolidColorBrush x:Key="TabViewButtonBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+                <SolidColorBrush x:Key="TabViewButtonBackgroundPointerOver" Color="{ThemeResource SystemAccentColor}" />
+                <SolidColorBrush x:Key="TabViewButtonBackgroundPressed" Color="{ThemeResource SystemAccentColor}" />
+            </TabView.Resources>-->
+            <TabView.TabStripHeader>
+                <MenuBar x:Name="TabViewHeader" Margin="{x:Bind VM.MenuLeftMargin, Mode=OneWay}">
+                    <MenuBarItem x:Uid="MenuFile">
+                        <MenuFlyoutItem x:Uid="MenuFileNew" Click="NewMenuItem_Click" Icon="Add">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="N" Modifiers="Control"/>
+                                <KeyboardAccelerator Key="T" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <!--Maybe new window Ctrl+Shift+N?-->
+                        <!--<MenuFlyoutSubItem Text="New">
+                            <MenuFlyoutItem Text="Plain Text Document"/>
+                            <MenuFlyoutItem Text="Rich Text Document"/>
+                            <MenuFlyoutItem Text="Other Formats..."/>
+                        </MenuFlyoutSubItem>-->
+                        <MenuFlyoutItem x:Uid="MenuFileOpen" Click="OpenMenuItem_Click" Icon="OpenFile">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="O" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSubItem x:Uid="MenuFileRecent" x:Name="RecentlyClosed">
+                            <MenuFlyoutItem x:Uid="MenuFileRecentNo" x:Name="NoRecentlyClosed" IsEnabled="False"/>
+                            <MenuFlyoutItem x:Name="LastRecentlyClosed" Click="ReOpenTab_Click" Visibility="Collapsed">
+                                <MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="T" Modifiers="Control,Shift"/>
+                                </MenuFlyoutItem.KeyboardAccelerators>
+                            </MenuFlyoutItem>
+                            <!--<MenuFlyoutItem x:Uid="MenuFileClearHistory"/>-->
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutItem x:Uid="MenuFileSaveCurrent" Click="SaveMenuItem_Click" Icon="Save">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="S" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Uid="MenuFileSaveAs" Click="SaveAsMenuItem_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE792;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="S" Modifiers="Control,Shift"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Uid="MenuFileSaveAsZsnd" Icon="SaveLocal" Click="SaveZsndMenuItem_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Z" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Uid="MenuFileSaveAll" Click="SaveAllMenuItem_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xEA35;"/>
+                                <!--SaveCopy-->
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="S" Modifiers="Control,Menu"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem x:Uid="MenuFileClose" Click="CloseMenuItem_Click" Icon="Remove">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="W" Modifiers="Control"/>
+                                <KeyboardAccelerator Key="F4" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <!--<MenuFlyoutItem x:Uid="MenuFileCloseWindow" Click="ExitMenuItem_Click" Icon="Cancel">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="W" Modifiers="Control,Shift"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>-->
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem x:Uid="MenuFileExit" Click="ExitMenuItem_Click" Icon="Cancel">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="F4" Modifiers="Menu" IsEnabled="False"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+                    <!--<MenuBarItem Title="Edit">
+                        <MenuFlyoutItem Text="Undo"/>
+                        <MenuFlyoutItem Text="Cut"/>
+                        <MenuFlyoutItem Text="Copy"/>
+                        <MenuFlyoutItem Text="Paste"/>
+                    </MenuBarItem>-->
+                    <MenuBarItem x:Uid="MenuView" Visibility="{x:Bind VM.IsMainTabView, Mode=OneWay}">
+                        <ToggleMenuFlyoutItem x:Uid="MenuViewCompactMode" IsChecked="{x:Bind Cfg.BigBanner, Mode=TwoWay}" Click="MenuView_CM_Click"/>
+                        <ToggleMenuFlyoutItem x:Uid="MenuViewSplitView" IsChecked="{x:Bind Cfg.SplitView, Mode=TwoWay}"/>
+                        <!--<RadioMenuFlyoutItem Text="Landscape" GroupName="OrientationGroup"/>
+                        <RadioMenuFlyoutItem Text="Portrait" GroupName="OrientationGroup" IsChecked="True"/>-->
+                    </MenuBarItem>
+                    <MenuBarItem x:Uid="MenuHelp" Visibility="{x:Bind VM.NonCompactMode, Mode=OneWay}">
+                        <MenuFlyoutItem x:Uid="MenuHelpAbout" Click="AboutMenuItem_Click"/>
+                    </MenuBarItem>
+                </MenuBar>
+            </TabView.TabStripHeader>
+            <TabView.TabItemTemplate>
+                <DataTemplate x:DataType="lib:ZsndFile">
+                    <TabViewItem>
+                        <!--IconSource="{x:Bind DataIconSource}"/>-->
+                        <controls:Tab_SoundsView/>
+                        <TabViewItem.HeaderTemplate>
+                            <DataTemplate x:DataType="lib:ZsndFile">
+                                <Grid ColumnDefinitions="Auto,Auto" AllowDrop="True" DragEnter="MainTabView_DragEnter">
+                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                                    <TextBlock Grid.Column="1" Text="*" Visibility="{x:Bind PendingChanges, Mode=OneWay}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </TabViewItem.HeaderTemplate>
+                    </TabViewItem>
+                </DataTemplate>
+            </TabView.TabItemTemplate>
+            <TabView.TabStripFooter>
+                <Grid x:Name="DragRegion" MinWidth="{x:Bind VM.FooterMinWidth, Mode=OneWay}">
+                    <Button x:Name="SettingsButton" Click="SettingsButton_Click"
+                            IsEnabled="{x:Bind VM.NonCompactMode, Mode=OneWay}"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            ToolTipService.ToolTip="Settings"
+                            Visibility="{x:Bind VM.NonCompactMode, Mode=OneWay}">
+                        <SymbolIcon Symbol="Setting" RenderTransformOrigin="0.5, 0.5">
+                            <SymbolIcon.RenderTransform>
+                                <RotateTransform x:Name="SettingsIconRotate" Angle="0" />
+                            </SymbolIcon.RenderTransform>
+                        </SymbolIcon>
+                        <Button.Resources>
+                            <Storyboard x:Key="GearRotateOpen">
+                                <DoubleAnimation Storyboard.TargetName="SettingsIconRotate" Storyboard.TargetProperty="Angle" To="60" Duration="{StaticResource ControlFasterAnimationDuration}" Completed="GearRotate_Completed"/>
+                            </Storyboard>
+                            <Storyboard x:Key="GearRotateClose">
+                                <DoubleAnimation Storyboard.TargetName="SettingsIconRotate" Storyboard.TargetProperty="Angle" To="0" Duration="{StaticResource ControlFasterAnimationDuration}"/>
+                            </Storyboard>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </TabView.TabStripFooter>
+            <TabView.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number1" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number2" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number3" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number4" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number5" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number6" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number7" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number8" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number9" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+                <KeyboardAccelerator Key="Number0" Modifiers="Control" Invoked="NavigateToTabNrKB_Invoked"/>
+            </TabView.KeyboardAccelerators>
+            <TabView.Resources>
+                <ResourceDictionary>
+                    <SolidColorBrush x:Key="SemiTransparentTabHeaderBackground" Color="{ThemeResource SolidBackgroundFillColorTertiary}" Opacity="0.6"/>
+                    <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SemiTransparentTabHeaderBackground" />
+                </ResourceDictionary>
+            </TabView.Resources>
+        </TabView>
+        <StackPanel Margin="5" VerticalAlignment="Bottom">
+            <InfoBar x:Name="SuccessInfo" x:Uid="AppSuccessInfo" Severity="Success"/>
+            <!--<InfoBar x:Name="ApplyRunning"
+                         Title="Applying x_voice..."
+                         Message="Wait for the x_voice to be updated."
+                         IsClosable="False"
+                         Background="{ThemeResource SystemFillColorSolidNeutralBackground}">
+                <InfoBar.Content>
+                    <ProgressBar IsIndeterminate="True" Margin="0 0 50 10"/>
+                </InfoBar.Content>
+            </InfoBar>-->
+            <InfoBar x:Name="ErrorInfo" x:Uid="AppErrorInfo" Severity="Error"/>
+        </StackPanel>
+    </Grid>
+</Page>

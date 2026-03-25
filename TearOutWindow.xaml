@@ -1,0 +1,25 @@
+<Window
+    x:Class="Zsnd_UI.TearOutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:Zsnd_UI"
+    mc:Ignorable="d"
+    Title="Zsnd-UI">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Image Style="{ThemeResource MMBannerImage}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+        <!--No Icon?-->
+        <!--<Grid x:Name="AppTitleBar" VerticalAlignment="Top">
+            <Image x:Name="AppTitleIcon" Source="/Assets/SHIELD_Logo_GUI.ico"
+                   HorizontalAlignment="Right"
+                   Margin="8 8 138 8" Height="24" Width="24"/>
+        </Grid>-->
+        <local:Page_TabView x:Name="TabViewPage" Grid.RowSpan="2"/>
+    </Grid>
+</Window>

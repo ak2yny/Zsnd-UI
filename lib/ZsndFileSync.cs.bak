@@ -1,0 +1,486 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Zsnd_UI.Functions;
+
+namespace Zsnd_UI.lib
+{
+    internal partial class ZsndFile : ObservableObject
+    {
+        private Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+        private bool _updating;
+
+        [ObservableProperty]
+        internal partial bool PendingChanges { get; set; }
+
+        [ObservableProperty]
+        internal partial string Name { get; set; }
+
+        [ObservableProperty]
+        internal partial string ExtractedDirName { get; set; } // WIP: Saveable?
+
+        internal string ZsndFilePath { get; private set; }
+
+        private string JsonFilePath { get; set; }
+
+        internal string JsonDir { get; private set; }
+
+        private string? BaseName { get; set; }
+
+        private JsonMain Json { get; set; }
+
+        internal List<UISound> Sounds { get; set; } = [];
+        internal System.Collections.ObjectModel.ObservableCollection<UISound> FilteredSounds { get; set; }
+
+        internal System.Collections.ObjectModel.ObservableCollection<JsonSample> Samples { get; set; }
+
+        internal ZsndPlatform PlatformInfo { get; private set; }
+
+        [ObservableProperty]
+        internal partial UISound? SelectedSound { get; set; }
+
+        //[ObservableProperty]
+        //internal partial int SampleIndex { get; set; } = -1; // mirror SelectedSound.SampleIndex
+
+        [ObservableProperty]
+        internal partial bool Loop { get; set; }
+        // Other unknown flags not added
+        // Selected Sound Properties:
+        [ObservableProperty]
+        internal partial int IndexCategory { get; set; }
+
+        [ObservableProperty]
+        internal partial int IndexMaster { get; set; }
+
+        [ObservableProperty]
+        internal partial int IndexVoice { get; set; }
+
+        [ObservableProperty]
+        internal partial int IndexMenu { get; set; }
+
+        [ObservableProperty]
+        internal partial int IndexMusic { get; set; }
+
+        [ObservableProperty]
+        internal partial uint SampleRate { get; set; } = 22050; // Could possibly remove, by observing Sample_rate and adding JsonSample SelectedSample here instead
+
+        [ObservableProperty]
+        internal partial bool CharacterIsV { get; set; }
+
+        [ObservableProperty]
+        internal partial bool CharacterIsM { get; set; } = true;
+
+        [ObservableProperty]
+        internal partial bool CharacterEvent { get; set; }
+
+        [ObservableProperty]
+        internal partial bool MenuEvent { get; set; }
+
+        [ObservableProperty]
+        internal partial bool MusicEvent { get; set; }
+
+        [ObservableProperty]
+        internal partial string? MenuName { get; set; }
+
+        internal readonly FileEvents FileEvents = new();
+
+        internal ZsndFile()
+        {
+            _updating = true;
+            PlatformInfo = new("PC");
+            Name = ExtractedDirName = "NEWFILE";
+            SetJsonDir(Settings.Shared.UI.ExtractedAssetsPath);
+            ZsndFilePath = "";
+            Json = new();
+            FilteredSounds = new(Sounds);
+            Samples = new(Json.Samples);
+            _updating = false;
+        }
+
+        internal ZsndFile(string FilePath, string Extension, string DisplayName) => LoadFile(FilePath, Extension, DisplayName);
+
+        [MemberNotNull(nameof(JsonDir), nameof(JsonFilePath))]
+        public void SetJsonFilePath(string value) { JsonDir = Path.GetDirectoryName(value)!; JsonFilePath = value; }
+
+        [MemberNotNull(nameof(JsonDir), nameof(JsonFilePath))]
+        public void SetJsonDir(string value) { JsonFilePath = Path.Combine(value, $"{Name}.json"); JsonDir = value; }
+
+        [MemberNotNull(nameof(PlatformInfo), nameof(FilteredSounds), nameof(Samples), nameof(ExtractedDirName),
+            nameof(Name), nameof(Json), nameof(JsonDir), nameof(JsonFilePath), nameof(ZsndFilePath))]
+        internal void LoadFile(string FilePath, string Extension, string DisplayName)
+        {
+            _updating = true;
+            Name = ExtractedDirName = DisplayName; // Path.GetFileName(FilePath)[..^Extension.Length];
+            if (Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                ZsndFilePath = $"{FilePath[..^Extension.Length]}.zs{(FileEvents.MFirst ? 'm' : 's')}";
+                SetJsonFilePath(FilePath);
+                Json = Cmd.LoadJson(JsonFilePath)!;
+                PlatformInfo = new(Json.Platform);
+                if (Json.Samples.Count != 0)
+                {
+                    for (int i = 0; i < Json.Sounds.Count; i++)
+                    {
+                        JsonSound S = Json.Sounds[i];
+                        S.Hash = Hashing.EnsureHash(S.Hash, FileEvents);
+                        Sounds.Add(new(S, Json.Samples));
+                    }
+                }
+            }
+            else
+            {
+                Json = new();
+                ZsndFilePath = FilePath;
+                SetJsonDir(Settings.Shared.UI.ExtractedAssetsPath); // WIP: Better path?
+                PlatformInfo = Cmd.LoadZsnd(ZsndFilePath, JsonFilePath, Sounds, Json.Samples) ?? new("PC");
+                Json.Platform = PlatformInfo.String;
+            }
+            //if (Name.StartsWith("X_VOICE"))
+            //    Lists.XVSounds = [.. ZJ.Sounds];
+            FilteredSounds ??= new(Sounds);
+            if (Samples is null) { Samples = new(Json.Samples); }
+            else { for (int i = 0; i < Json.Samples.Count; i++) { Samples.Add(Json.Samples[i]); } }
+            _updating = false;
+        }
+
+        internal void SaveJson()
+        {
+            if (!PendingChanges) { return; }
+            SaveJson(JsonFilePath);
+        }
+
+        private void SaveJson(string FilePath)
+        {
+            if (Cmd.SaveJson(FilePath, Sounds, Samples, PlatformInfo) is string ErrorMsg)
+            {
+            }
+        }
+
+        internal async Task<string?> SaveZsnd()
+        {
+            if (!PendingChanges) { return null; }
+            // WIP: Do we need to apply FilteredSounds?
+            //      Handle all tries at WriteZsnd?
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    //if (Cmd.SaveJson(JsonFilePath, Sounds, Samples, PlatformInfo) is string ErrorMsg) { return ErrorMsg; }
+                    return Cmd.WriteZsnd(ZsndFilePath, Sounds, Samples, PlatformInfo);
+                }
+                catch (Exception ex)
+                {
+                    return $"Failed to write '{ZsndFilePath}'.\n{ex}.";
+                }
+            }).WaitAsync(TimeSpan.FromMinutes(1));
+        }
+
+        internal void SaveFile(string FilePath, string Extension, string DisplayName)
+        {
+            Name = DisplayName;
+            if (Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                JsonFilePath = FilePath;
+                ZsndFilePath = $"{FilePath[..^Extension.Length]}.zs{(FileEvents.MFirst ? 'm' : 's')}";
+                SaveJson(FilePath);
+            }
+            else
+            {
+                ZsndFilePath = FilePath;
+                // WIP: Same as in LoadFile, but needs to be improved
+                // WIP: Combine with other SaveZsnd
+            }
+        }
+        /// <summary>
+        /// Adds the <paramref name="Sound"/> to the <see cref="FilteredSounds"/> collection and the <see cref="Sounds"/> list.
+        /// </summary>
+        internal void AddSound(UISound Sound)
+        {
+            FilteredSounds.Add(Sound);
+            Sounds.Add(Sound);
+        }
+        /// <summary>
+        /// Adds a new sound to the <see cref="FilteredSounds"/> collection and the <see cref="Sounds"/> list. Uses the properties from the <see cref="SelectedSound"/>.
+        /// </summary>
+        internal void AddSound() { AddSound(SelectedSound is null ? new() : new UISound(SelectedSound.Hash, -1, SelectedSound.Flags)); }
+        /// <summary>
+        /// Adds a new audio <paramref name="Sample"/> to the (WIP: place to extract, headerless & normal), converting and storing the file as needed.
+        /// </summary>
+        /// <returns>The zero-based index of the newly added sample if successful; otherwise, -1 if the sample could not be added
+        /// due to file incompatibility or if the maximum number of samples has been reached.</returns>
+        internal int AddSample(Windows.Storage.StorageFile Sample)
+        {
+            //FileIncompatible.IsOpen = FileMaxReached.IsOpen = false;
+            int NewIndex = Samples.Count;
+            if (NewIndex > 0xFFFF)
+            {
+                //FileMaxReached.IsOpen = true;
+                return -1;
+            }
+            string New = Path.Combine(JsonDir, "new"); // WIP: Configurable directory?
+            JsonSample SampleInfo = new();
+            try
+            {
+                _ = Directory.CreateDirectory(New);
+                // WAV and VAG are headerless, DSP has special header, XMA has original RIFF header, Xbox ADPCM is unhandled at this time
+                if (ZsndConvert.From(Sample.FileType, Sample.Path, SampleInfo, PlatformInfo) is byte[] ConvertedFileBuffer && ConvertedFileBuffer.Length != 0) // "RIFF"
+                {
+                    File.WriteAllBytes(Path.Combine(New, Sample.Name), ConvertedFileBuffer);
+                }
+                else
+                {
+                    SampleInfo.Format = 106;
+                    SampleInfo.Sample_rate = 22050;
+                    ZsndConvert.To(SampleInfo, Sample.Path, ".wav");
+                    File.Copy(Sample.Path, Path.Combine(New, Sample.Name), true);
+                }
+                SampleInfo.File = Path.Combine("new", Sample.Name);
+                Samples.Add(SampleInfo);
+                return NewIndex;
+            }
+            catch
+            {
+                //FileIncompatible.IsOpen = true;
+                return -1;
+            }
+
+        }
+        /// <summary>
+        /// Adds a new audio <paramref name="Sample"/> to the (WIP: place to extract, headerless & normal), converting and storing the file as needed & adds a new default sound, if the sample was added successfully.
+        /// </summary>
+        internal void AddSampleSound(Windows.Storage.StorageFile Sample)
+        {
+            if (AddSample(Sample) is int Index && Index != -1)
+            { AddSound(new() { SampleIndex = Index, Sample = Path.GetFileName(Samples[Index].File), PendingChanges = false }); }
+        }
+
+        internal void SortSounds(string SortTag)
+        {
+            FilteredSounds.Sort(
+                SortTag == "hash.asc"
+                ? static c => c.OrderBy(static s => s.Hash)
+                : SortTag == "hash.desc"
+                ? static c => c.OrderByDescending(static s => s.Hash)
+                : SortTag == "file.asc"
+                ? static c => c.OrderBy(static s => s.Sample)
+                : SortTag == "file.desc"
+                ? static c => c.OrderByDescending(static s => s.Sample)
+                : SortTag == "index.asc"
+                ? static c => c.OrderBy(static s => s.SampleIndex)
+                : SortTag == "index.desc"
+                ? static c => c.OrderByDescending(static s => s.SampleIndex)
+                : static c => c.OrderBy(static s => s)); // never happens
+            if (Sounds.Count == FilteredSounds.Count) { Sounds = [.. FilteredSounds]; }
+        }
+
+        internal Task FilterSounds(string Filter)
+        {
+            Func<UISound, bool> FilterMatches = Filter.Length == 0 ? (s => true) : (s =>
+            {
+                return s.SampleIndex != -1
+                    ? s.Hash.Contains(Filter, StringComparison.OrdinalIgnoreCase)
+                        || Samples[s.SampleIndex].File.AsSpan().Contains(Filter, StringComparison.OrdinalIgnoreCase)
+                    : s.Hash.Contains(Filter, StringComparison.OrdinalIgnoreCase);
+            });
+            return Task.Run(() =>
+            {
+                _ = DispatcherQueue.TryEnqueue(() =>
+                {
+                    for (int i = 0; i < Sounds.Count; i++)
+                    {
+                        UISound S = Sounds[i];
+                        if (FilterMatches(S))
+                        {
+                            if (!FilteredSounds.Contains(S)) { FilteredSounds.Add(S); }
+                        }
+                        else { _ = FilteredSounds.Remove(S); }
+                    }
+                });
+            });
+        }
+        /*
+        private void FilterSounds(Func<UISound, bool> FilterMatches)
+        {
+            FilteredSounds.Clear();
+            for (int s = 0; s < Sounds.Count; s++)
+            {
+                if (FilterMatches(Sounds[s])) { FilteredSounds.Add(Sounds[s]); }
+            }
+        }
+        */
+        internal void RemoveSelected() => _ = SelectedSound is UISound Sound && FilteredSounds.Remove(Sound) && Sounds.Remove(Sound);
+
+        partial void OnNameChanged(string value)
+        {
+            string NameUpper = value.ToUpperInvariant();
+            BaseName = value.Length > 2 && value[^2] is '_' ? NameUpper[..^2] : NameUpper;
+            FileEvents.Update(NameUpper, BaseName);
+        }
+
+        partial void OnSampleRateChanged(uint value)
+        {
+            if (_updating || SelectedSound is null || SelectedSound.SampleIndex == -1
+                || Json.Samples[SelectedSound.SampleIndex].Sample_rate == value) { return; }
+            Json.Samples[SelectedSound.SampleIndex].Sample_rate = value;
+            PendingChanges = true;
+        }
+
+        partial void OnLoopChanged(bool value)
+        {
+            if (_updating || SelectedSound is null || SelectedSound.SampleIndex == -1) { return; }
+            JsonSample S = Json.Samples[SelectedSound.SampleIndex];
+            if (value == S.Flags.HasFlag(Properties.SampleF.Loop)) { return; }
+            S.Flags = value ? S.Flags | Properties.SampleF.Loop : S.Flags & ~Properties.SampleF.Loop;
+            PendingChanges = true;
+        }
+
+        internal void HashToEvents() => OnSelectedSoundChanged(SelectedSound);
+
+        partial void OnSelectedSoundChanged(UISound? value)
+        {
+            if (value is null || value.Hash.Length == 0) { return; }
+            _updating = true;
+            int le = value.Hash.Length;
+            int ix = value.Hash.IndexOf('/'); if (ix == -1) { ix = le - 1; }
+            _ = Enum.TryParse(value.Hash[..ix], out Events.Category C); ix++;
+            IndexCategory = (int)C;
+            switch (C)
+            {
+                case Events.Category.CHAR or Events.Category.CHARACTER:
+                    int ni = value.Hash.LastIndexOf('/', le - 1, le - ix); if (ni == -1) { ni = ix; }
+                    CharacterIsV = value.Hash[ni - 1] is 'V'; // '/' if no second/last slash found
+                    value.CharFile ??= ix < ni - 2 ? value.Hash[ix..(ni - 2)] : BaseName; ni++;
+                    if (CharacterIsV) { IndexVoice = Events.Voice.IndexOf(value.Hash[ni..]); }
+                    else { IndexMaster = Events.Master.IndexOf(value.Hash[ni..]); }
+                    break;
+                case Events.Category.COMMON:
+                    ReadOnlySpan<char> sc = value.Hash.AsSpan();
+                    Events.MenuPrefix p = le > 23 && sc[13] is 'C' && sc.Slice(ix, 16).SequenceEqual(Events.MenuPrefixes[4]) // or sc.Equals("MENUS/CHARACTER/", StringComparison.OrdinalIgnoreCase);
+                        ? le > 26 && sc[23] is 'A' && sc[24] is 'N'
+                            ? Events.MenuPrefix.AN : le > 29 && sc.Slice(23, 5).SequenceEqual("BREAK")
+                            ? Events.MenuPrefix.BREAK
+                            : Events.MenuPrefix.CHARACTER
+                        : le > 18 && sc[ix] is 'T' && sc.Slice(ix, 16).SequenceEqual(Events.MenuPrefixes[1])
+                            ? Events.MenuPrefix.TEAM
+                        : le > 19 && Enum.TryParse(sc[13..(sc[17] is '/' ? 17 : sc[18] is '/' ? 18 : le)],
+                            out Events.MenuPrefix op) ? op // doesn't check sc.Slice(ix, 6).SequenceEqual("MENUS/")
+                            : Events.MenuPrefix.OTHER;
+                    IndexMenu = (int)p;
+                    MenuName = value.Hash[(7 + Events.MenuPrefixes[IndexMenu].Length)..];
+                    break;
+                case Events.Category.MUSIC: // WIP: Other events?
+                    ReadOnlySpan<char> sm = value.Hash.AsSpan();
+                    IndexMusic = le > 12 && sm.Slice(ix, 4).SequenceEqual("CUES")
+                        ? sm[11] is 'I' && sm[12] is 'N'
+                            ? 3 : 4
+                        : le > 8 && sm[^2] is '_'
+                            ? Events.MusSfxs.IndexOf(sm[^1])
+                            : 6;
+                    break;
+                case Events.Category.VOICE: // Conversation voices, WIP: Do they need an extra box?
+                default:
+                    if (string.Equals(value.Hash, "STATSCREEN/AMB", StringComparison.OrdinalIgnoreCase)) // rare case
+                    { IndexCategory = 4; IndexMusic = 5; }
+                    break;
+            }
+            if (value.SampleIndex != -1)
+            {
+                SampleRate = Json.Samples[value.SampleIndex].Sample_rate;
+                Loop = Json.Samples[value.SampleIndex].Flags.HasFlag(Properties.SampleF.Loop);
+            }
+            _updating = false;
+        }
+
+        partial void OnCharacterIsVChanged(bool value)
+        {
+            CharacterIsM = !value;
+            if (_updating) { return; }
+            if (value) { CharEventsChanged('V', IndexVoice, Events.Voice); }
+            else { CharEventsChanged('M', IndexMaster, Events.Master); }
+        }
+
+        internal void CharEventsChanged(char type, int index, string[] events)
+        {
+            if (_updating || SelectedSound is null || index == -1) { return; }
+            SelectedSound.Hash = $"{Events.Categories[IndexCategory]}/{SelectedSound.CharFile}_{type}/{events[index]}";
+            PendingChanges = true;
+        }
+
+        partial void OnIndexCategoryChanged(int oldValue, int newValue)
+        {
+            if (newValue != -1 && SelectedSound is not null)
+            {
+                switch (newValue)
+                {
+                    case 1 or 2: MenuEvent = MusicEvent = !(CharacterEvent = true); break;
+                    case 3: CharacterEvent = MusicEvent = !(MenuEvent = true); break;
+                    case 4: CharacterEvent = MenuEvent = !(MusicEvent = true); break;
+                    case 5 or 0:
+                    default: CharacterEvent = MenuEvent = MusicEvent = false; break;
+                }
+                if (_updating) { return; }
+                string end = oldValue == 0 ? SelectedSound.Hash
+                    : SelectedSound.Hash[(SelectedSound.Hash.IndexOf('/') + 1)..];
+                SelectedSound.Hash = newValue == 0 ? end : $"{Events.Categories[newValue]}/{end}";
+                PendingChanges = true;
+            }
+        }
+
+        partial void OnIndexMasterChanged(int value) => CharEventsChanged('M', value, Events.Master);
+
+        partial void OnIndexVoiceChanged(int value) => CharEventsChanged('V', value, Events.Voice);
+
+        partial void OnIndexMenuChanged(int value)
+        {
+            if (_updating || SelectedSound is null || MenuName is null || value == -1) { return; }
+            if (value == 1)
+            {
+                _updating = true;
+                if (MenuName.StartsWith("TEAM_BONUS_", StringComparison.OrdinalIgnoreCase)) { MenuName = (MenuName[11..]); }
+                else if (MenuName.StartsWith("BONUS_", StringComparison.OrdinalIgnoreCase)) { MenuName = (MenuName[6..]); }
+                _updating = false;
+            }
+            SelectedSound.Hash = $"COMMON/{Events.MenuPrefixes[value]}{MenuName}";
+            PendingChanges = true;
+        }
+
+        partial void OnIndexMusicChanged(int value)
+        {
+            if (_updating || SelectedSound is null || value == -1) { return; }
+            if (value == 6 && SelectedSound.Hash.StartsWith("MUSIC/", StringComparison.OrdinalIgnoreCase)) { return; }
+            SelectedSound.Hash = value == 6 ? $"MUSIC/{SelectedSound.Hash}" : Events.Music[value];
+            PendingChanges = true;
+        }
+
+        partial void OnMenuNameChanged(string? value)
+        {
+            //private CancellationTokenSource? _debounceTimer;
+            //_debounceTimer?.Cancel();
+            //_debounceTimer = new CancellationTokenSource();
+            //Task.Delay(600, _debounceTimer.Token).ContinueWith(t =>
+            //{
+            //    if (t.IsCompletedSuccessfully && !_debounceTimer.Token.IsCancellationRequested)
+            //    {
+            //        DispatcherQueue.TryEnqueue(() => OnIndexMenuChanged(IndexMenu));
+            //    }
+            //}, _debounceTimer.Token);
+            OnIndexMenuChanged(IndexMenu); // WIP: MenuName might not be value, yet.
+        }
+
+        internal void SampleChanged(JsonSample Sample)
+        {
+            if (_updating || SelectedSound is null || !SelectedSound.PendingChanges) { return; }
+            Loop = Sample.Flags.HasFlag(Properties.SampleF.Loop);
+            SampleRate = Sample.Sample_rate;
+            SelectedSound.Sample = Path.GetFileName(Sample.File);
+            SelectedSound.PendingChanges = !(PendingChanges = true);
+        }
+
+        public override string ToString() => Name;
+    }
+}

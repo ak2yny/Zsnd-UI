@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Zsnd-UI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Zsnd-UI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

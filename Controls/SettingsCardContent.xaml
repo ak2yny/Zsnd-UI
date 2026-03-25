@@ -1,0 +1,46 @@
+<UserControl
+    x:Class="Zsnd_UI.Controls.SettingsCardContent"
+    x:Name="SettingsCardContentName"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WidthLayout">
+                <VisualState x:Name="Normal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="840" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="Compact">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentGrid.Grid.Column" Value="1"/>
+                        <Setter Target="ContentGrid.Grid.Row" Value="2"/>
+                        <Setter Target="ContentGrid.HorizontalAlignment" Value="Left"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition MinWidth="120"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ContentPresenter Content="{x:Bind Icon}" Grid.RowSpan="2" Margin="0 0 16 0"/>
+        <TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Bind Header}"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Description}" Foreground="{ThemeResource TextFillColorSecondary}"
+                   MinWidth="120" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords"/>
+        <ContentPresenter Content="{Binding Controls, ElementName=SettingsCardContentName, FallbackValue='{}{ Content }'}"
+                          Grid.Column="2" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

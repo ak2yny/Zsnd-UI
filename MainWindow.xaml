@@ -1,0 +1,40 @@
+<Window
+    x:Class="Zsnd_UI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Zsnd-UI">
+
+    <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{x:Bind Cfg.BannerHeight, Mode=OneWay}"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Image Style="{ThemeResource MMBannerImage}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="{x:Bind Cfg.BannerVAlignment, Mode=OneWay}" />
+        <Grid x:Name="AppTitleBar" VerticalAlignment="Top" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="AppTitleIcon" Source="/Assets/SHIELD_Logo_GUI.ico"
+                   Width="24" Height="24" Margin="8"/>
+            <TextBlock x:Name="AppTitleTextBlock" x:Uid="AppName" Grid.Column="1"
+                       Foreground="AliceBlue"
+                       TextWrapping="NoWrap"
+                       Style="{ThemeResource CaptionTextBlockStyle}"
+                       VerticalAlignment="Center"
+                       Visibility="{x:Bind Cfg.BigBanner, Mode=OneWay}"/>
+        </Grid>
+        <Grid x:Name="MainContent" Grid.RowSpan="2" Margin="{x:Bind Cfg.TabViewTopMargin, Mode=OneWay}">
+            <!--We could add a Thumb to adjust the split ratio-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="{x:Bind Cfg.SplitViewRightPanelWidth, Mode=OneWay}"/>
+            </Grid.ColumnDefinitions>
+            <Frame x:Name="FrameLeft"/>
+            <Frame x:Name="FrameRight" Grid.Column="1" Loaded="FrameRight_Loaded" Visibility="{x:Bind Cfg.SplitView, Mode=OneWay}"/>
+        </Grid>
+    </Grid>
+</Window>
