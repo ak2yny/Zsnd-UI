@@ -393,7 +393,7 @@ namespace Zsnd_UI.lib
                     Plat.IsMicrosoft
                         ? ZsndReader.ReadString(FileInfo, i * FileInfoSz + stringO)
                         : $"{i}.{Ext}",
-                    0, // format: FileInfo32[FI32I + 2], // Microsoft only
+                    0, // format: FileInfo32[FI32I + 2], // Microsoft only (DSP on GC plats)
                     Plat.IsPS
                         ? RoundPS2Rate(SampleInfo[SII + PSRateO] * 44100 / 0x1000)
                         : SampleInfo32[i * SampleInfoSz32 + 1],
@@ -464,12 +464,12 @@ namespace Zsnd_UI.lib
             uint SoundCount = (uint)Root.Sounds.Count, SampleCount = Math.Min((uint)Root.Samples.Count, ushort.MaxValue + 1);
             int SampleInfoSz = (int)Root.Platform.SampleInfoSz / 2, SampleInfoSz32 = SampleInfoSz / 2,
                 FileInfoSz = (int)Root.Platform.FileInfoSz, FileInfoSz32 = FileInfoSz / 4;
-            uint soundsOffset = HeaderSize + (SoundCount * 8); // 2 * uint
-            uint sampleHOffset = soundsOffset + (SoundCount * 24);
-            uint samplesOffset = sampleHOffset + (SampleCount * 8); // 2 * uint
-            uint sampleFHOffset = samplesOffset + (SampleCount * Root.Platform.SampleInfoSz);
-            uint sampleFOffset = sampleFHOffset + (SampleCount * 8); // 2 * uint
-            uint InfoSize = sampleFOffset + (SampleCount * Root.Platform.FileInfoSz); InfoSize = (InfoSize + StepSize) & ~StepSize;
+            uint soundsOffset = HeaderSize + (SoundCount * 8), // 2 * uint
+                sampleHOffset = soundsOffset + (SoundCount * 24),
+                samplesOffset = sampleHOffset + (SampleCount * 8), // 2 * uint
+                sampleFHOffset = samplesOffset + (SampleCount * Root.Platform.SampleInfoSz),
+                sampleFOffset = sampleFHOffset + (SampleCount * 8), // 2 * uint
+                InfoSize = sampleFOffset + (SampleCount * Root.Platform.FileInfoSz);
 
             if (SampleCount > 0x10000) { throw new IndexOutOfRangeException("The maximum file count was exceeded (index is limited by uint16)."); }
 
@@ -480,7 +480,7 @@ namespace Zsnd_UI.lib
             // Zfile.OpenStreamForWriteAsync(); if Zfile is storage file
             await using FileStream fs = new(Zfile, FileMode.Create, FileAccess.Write, FileShare.None, 0x1000, FileOptions.Asynchronous);
             await using ZsndWriter writer = new(fs, Root.Platform.Is7thGen);
-            fs.Position = InfoSize;
+            fs.Position = (InfoSize + StepSize) & ~StepSize;
             for (int i = 0; i < SampleCount; i++)
             {
                 UISample Sa = Root.Samples[i];
@@ -492,7 +492,12 @@ namespace Zsnd_UI.lib
                 fs.Seek(padding, SeekOrigin.Current);
                 FileInfo32[FI32I + 1] = size + padding;
                 if (Root.Platform.IsMicrosoft)
-                    FileInfo32[FI32I + 2] = IsPC && (Sa.Flags & SampleF.FourChannels) == SampleF.None ? 106u : 1u;
+                {
+                    // XENO (360) has no 4ch (only stereo) and stereo is same as mono (same XMA)
+                    bool Mono = Root.Platform.ID is Platform.XENO || (Sa.Flags & SampleF.FourChannels) == SampleF.None;
+                    if (!IsPC || Mono)
+                        FileInfo32[FI32I + 2] = IsPC ? 106u : Mono ? 1u : 3u /*Xbox non-mono*/ ;
+                }
                 else if (Root.Platform.ID == Platform.GCUB)
                     FileInfo32[FI32I + 2] = SoundIDs.DSP;
                 FileHashesBase[i] = $"/{ZsndName}/{Path.GetFileNameWithoutExtension(Sa.Name).ToUpperInvariant()}";

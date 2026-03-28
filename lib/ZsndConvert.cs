@@ -568,6 +568,7 @@ namespace Zsnd_UI.lib
             {
                 // Microsoft XNA Game Studio [XNB]: First 4 bytes of a block contain initialization information.
                 // https://stackoverflow.com/questions/9541471/problems-converting-adpcm-to-pcm-in-xna
+                // WIP: XBADPCM non-mono in XML1 is format 3 instead of 1. Functionality is unconfirmed.
                 Span<IMAState> States = stackalloc IMAState[Channels];
                 ReadOnlySpan<short> EncodedSamples = MemoryMarshal.Cast<byte, short>(EncodedBytes);
                 //#if BIGENDIAN

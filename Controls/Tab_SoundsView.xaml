@@ -453,7 +453,7 @@
                                            HorizontalAlignment="Center"
                                            Margin="15"
                                            VerticalAlignment="Center"/>
-                                <ContentControl AllowDrop="True" Background="Transparent" DragEnter="SampleDropArea_DragEnter" Grid.Row="2"/>
+                                <Border AllowDrop="True" Background="Transparent" DragEnter="SampleDropArea_DragEnter" Grid.Row="2"/>
                                 <Rectangle x:Name="SampleDropArea" Grid.Row="2"
                                            AllowDrop="True"
                                            DragOver="SampleDropAreaBG_DragOver"
@@ -539,7 +539,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.KeyboardAccelerators>
-                <KeyboardAccelerator Key="Delete" Invoked="SoundsList_Delete" ScopeOwner="{x:Bind SampleListView}"/>
+                <KeyboardAccelerator Key="Delete" Invoked="SampleList_Delete" ScopeOwner="{x:Bind SampleListView}"/>
             </ListView.KeyboardAccelerators>
         </ListView>
         <ProgressRing Grid.Row="1"

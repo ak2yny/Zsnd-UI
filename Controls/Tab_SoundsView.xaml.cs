@@ -38,6 +38,7 @@ namespace Zsnd_UI.Controls
             args.Handled = true;
         }
         // WIP: Possibly add stop button to keep user informed about playing sounds
+        //      Add support to drag & drop zss/json files
         //      When extracting, we might want to ask for confirmation, if the extraction directory already exists
         //      When adding samples (manually) the exact same sample might already be in the list (UISample or just same source/file)
         //      Add support to extract selected
@@ -268,6 +269,7 @@ namespace Zsnd_UI.Controls
                 && (await e.DataView.GetStorageItemsAsync())[0] is Windows.Storage.StorageFile Sample
                 && File.AddSample(Sample) is UISample sample)
             {
+                if (Sound.Loop) { sample.Flags |= ZsndProperties.SampleF.Loop; }
                 Sound.Sample = sample;
             }
             SampleDropArea.Visibility = Visibility.Collapsed;
@@ -290,6 +292,11 @@ namespace Zsnd_UI.Controls
             DataPackage dataPackage = new() { RequestedOperation = DataPackageOperation.Copy };
             dataPackage.SetText($"{File.SelectedSound.Hash}".ToLower());
             Clipboard.SetContent(dataPackage);
+        }
+
+        private void SampleList_Delete(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (SampleListView.SelectedIndex != -1) { File.Samples.RemoveAt(SampleListView.SelectedIndex); }
         }
     }
 }

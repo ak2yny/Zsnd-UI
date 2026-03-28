@@ -262,11 +262,11 @@ namespace Zsnd_UI.lib
         /// <summary>
         /// Adds a new sound to the <see cref="FilteredSounds"/> collection and the <see cref="Sounds"/> list. Uses the properties from the <see cref="SelectedSound"/>.
         /// </summary>
-        internal void AddSound() { AddSound(SelectedSound is null ? new("", 0xFF) : new(SelectedSound.Hash, SelectedSound.Flags)); }
+        internal void AddSound() { AddSound(SelectedSound is null ? new("", 0xFF) : new(SelectedSound.Hash, SelectedSound.Flags) { Loop = SelectedSound.Loop }); }
         /// <summary>
         /// Adds a new audio <paramref name="Sample"/> to the (WIP: place to extract, headerless + normal), converting and storing the file as needed.
         /// </summary>
-        /// <returns>The zero-based index of the newly added sample if successful; otherwise, -1 (WIP: Error reporting).</returns>
+        /// <returns>The newly added <see cref="UISample"/> if successful and not in samples list mode; otherwise, <see langword="null"/>.</returns>
         internal UISample? AddSample(Windows.Storage.StorageFile Sample)
         {
             // WIP: Improve headerless/with-header management and add button to convert to headerless
@@ -279,7 +279,7 @@ namespace Zsnd_UI.lib
             }
             // WIP: Add option to use source file or copy?
             string extDir = ExtractedDir;
-            UISample SampleInfo = new() { Name = Sample.Name, File = Path.Combine(extDir, Sample.Name) };
+            UISample SampleInfo = new() { Name = Sample.Name };
             try
             {
                 // Might need to add support for WAV to other formats (or report) - WIP?
@@ -297,7 +297,9 @@ namespace Zsnd_UI.lib
                         SampleInfo.Format = 106;
                         SampleInfo.SampleRate = 22050;
                     }
-                    string extFile = PlatformInfo.IsHeaderless ? ZsndPath.GetHeaderlessPath(extDir, SampleInfo.Name) : SampleInfo.File;
+                    string extFile = PlatformInfo.IsHeaderless
+                        ? ZsndPath.GetHeaderlessPath(extDir, SampleInfo.Name)
+                        : Path.Combine(extDir, Sample.Name);
                     //await ZsndConvert.To(SampleInfo, Sample.Path, ".wav");
                     if (Sample.Path != extFile) { File.Copy(Sample.Path, extFile, true); }
                     // or SampleInfo.File = Sample.Path;
@@ -307,6 +309,7 @@ namespace Zsnd_UI.lib
             }
             catch
             {
+                // WIP: Error reporting
                 // Also happens if the source and destination are identical (source stream is not yet closed)
                 //FileIncompatible.IsOpen = true;
                 return null;
@@ -320,10 +323,12 @@ namespace Zsnd_UI.lib
         {
             if (AddSample(Sample) is UISample sample)
             {
+                byte flags = 0xFF;
+                if (SelectedSound is UISound S)
+                { flags = S.Flags; if (S.Loop) { sample.Flags |= ZsndProperties.SampleF.Loop; }; }
                 AddSound(new(
                     Hashing.CharHashFromFile(Sample.DisplayName.ToUpperInvariant(), Name.ToUpperInvariant()),
-                    SelectedSound is null ? (byte)0xFF : SelectedSound.Flags,
-                    sample), index);
+                    flags, sample), index);
             }
         }
 

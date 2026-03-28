@@ -88,7 +88,6 @@ namespace Zsnd_UI.lib
         public string? Name { get; set; }
 
         public string? File { get; set; }
-        // Unused?
         //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public uint Format { get; set; }
         [ObservableProperty]
