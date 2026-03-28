@@ -15,7 +15,7 @@
     <Authors>ak2yny</Authors>
     <Company>MarvelMods</Company>
     <Description>Graphical User Interface for Handling Raven Software's Zsnd Format</Description>
-    <VersionPrefix>0.0.3</VersionPrefix>
+    <VersionPrefix>0.0.4</VersionPrefix>
     <Version>$(VersionPrefix)-beta</Version>
     <AssemblyTitle>$(Description)</AssemblyTitle>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>

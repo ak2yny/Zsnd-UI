@@ -50,7 +50,7 @@ namespace Zsnd_UI.ViewModels
         internal static ZsndUISettings UI { get; set; }
 
         internal const string GitHub = "https://github.com/ak2yny/Zsnd-UI";
-        internal static readonly string? Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+        internal static readonly string? Version = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).ProductVersion;
 
         private static readonly string config = Path.Combine(Functions.ZsndPath.CD, "config.xml");
 

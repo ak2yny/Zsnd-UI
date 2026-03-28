@@ -26,18 +26,18 @@
                 Style="{StaticResource TitleBarBackButtonStyle}"/>
         <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"-->
         <TextBlock x:Uid="AboutTitle" Grid.Row="1" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-        <StackPanel Grid.Row="2" Spacing="10">
+        <StackPanel Grid.Row="2">
             <TextBlock Style="{ThemeResource BodyTextBlockStyle}">
                 <Run x:Uid="AppName"/>
                 <Run x:Name="AppVersion" Text="{x:Bind settings:Shared.Version}"/>
             </TextBlock>
-            <TextBlock Text="GNU General Public License 3.0"/>
+            <TextBlock Text="GNU General Public License 3.0" Margin="0 10"/>
             <TextBlock x:Uid="AboutDescription"
                        HorizontalAlignment="Left"
                        MaxWidth="300"
                        Style="{ThemeResource BodyTextBlockStyle}"
                        TextWrapping="Wrap"/>
-            <StackPanel Margin="-10 0" Orientation="Horizontal" Spacing="5">
+            <StackPanel Margin="-10 10" Orientation="Horizontal" Spacing="5">
                 <HyperlinkButton x:Uid="AboutLink" NavigateUri="{x:Bind settings:Shared.GitHub}" />
                 <HyperlinkButton x:Uid="UpdateCheck" Click="CheckUpdate_Click"/>
             </StackPanel>
@@ -49,7 +49,7 @@
             <InfoBar x:Name="UpdateFailedRetrieve" x:Uid="UpdateFailR" Severity="Error"/>
             <InfoBar x:Name="UpdateFailed" x:Uid="UpdateFail" Severity="Error"/>
         </StackPanel>
-        <ScrollView x:Name="UpdateInfo" Grid.Row="2" MaxWidth="400" Visibility="Collapsed">
+        <ScrollView x:Name="UpdateInfo" Grid.Row="3" MaxWidth="400" Visibility="Collapsed">
             <Grid Padding="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

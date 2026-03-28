@@ -75,8 +75,8 @@ namespace Zsnd_UI
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
             if (client is null || update_info is null) { return; }
-            string architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString();
-            int i = 0; for (; i < update_info.assets!.Count; i++) { if (update_info.assets[0].browser_download_url!.EndsWith(architecture, StringComparison.OrdinalIgnoreCase)) { break; } }
+            string architectureNexe = $"{System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}.exe";
+            int i = 0; while (i < update_info.assets!.Count) { if (update_info.assets[i++].browser_download_url!.EndsWith(architectureNexe, StringComparison.OrdinalIgnoreCase)) { break; } }
             GHAsset asset = update_info.assets[i];
             if (asset.browser_download_url is not string InstallerUrl) { return; }
             cancelts?.Dispose(); cancelts = new();
